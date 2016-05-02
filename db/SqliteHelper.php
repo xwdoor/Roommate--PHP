@@ -124,12 +124,50 @@ class SqliteHelper
     }
 
     /**
+     * 构建参数化SQL语句PDOStatement
+     * @param string $sql sql语句
+     * @param ContentValue $values sql语句中的参数
+     * @param ContentValue $whereArgs 筛选条件参数
+     * @return PDOStatement
+     */
+    private function getStatement($sql, $values, $whereArgs = null)
+    {
+        $stmt = $this->mPdo->prepare($sql);
+        $this->buildParams($stmt, $values);
+        $stmt->setFetchMode(PDO::FETCH_ASSOC);
+        //不能close，不然$result不能读取
+//            $stmt->close();
+        return $stmt;
+    }
+
+    /**
+     * 构建参数化SQL
+     * @param $stmt PDOStatement
+     * @param $values ContentValue
+     * @param ContentValue $whereArgs
+     */
+    private function buildParams($stmt, $values, $whereArgs = null)
+    {
+        if ($stmt && $values) {
+            foreach ($values->getArray() as $key => $value) {
+                $stmt->bindValue(":$key", $value);
+            }
+
+            if ($whereArgs) {
+                foreach ($values->getArray() as $key2 => $value2) {
+                    $stmt->bindValue(":$key2", $value2);
+                }
+            }
+        }
+    }
+
+    /**
      * 插入数据
      * @param string $sql sql语句
      * @param ContentValue $values sql语句中的参数
      * @return bool 返回sql执行结果
      */
-    private function insertData($sql, $values=null)
+    private function insertData($sql, $values = null)
     {
         if ($values) {
             $stmt = $this->getStatement($sql, $values);
@@ -146,7 +184,7 @@ class SqliteHelper
      * @param $values ContentValue sql语句中的参数
      * @return array 查询结果
      */
-    private function queryData($sql, $values=null)
+    private function queryData($sql, $values = null)
     {
         if ($values) {
             $stmt = $this->getStatement($sql, $values);
@@ -160,21 +198,16 @@ class SqliteHelper
     }
 
     /**
-     * 构建PDOStatement
-     * @param string $sql sql语句
-     * @param ContentValue $values sql语句中的参数
-     * @return PDOStatement
+     * 更新数据
+     * @param string $sql
+     * @param ContentValue $values
+     * @param ContentValue $whereArgs
+     * @return bool
      */
-    private function getStatement($sql, $values)
+    private function updateData($sql, $values, $whereArgs)
     {
-        $stmt = $this->mPdo->prepare($sql);
-        foreach ($values->getArray() as $key => $value) {
-            $stmt->bindValue(":$key", $value);
-        }
-        $stmt->setFetchMode(PDO::FETCH_ASSOC);
-        //不能close，不然$result不能读取
-//            $stmt->close();
-        return $stmt;
+        $stmt = $this->getStatement($sql, $values, $whereArgs);
+        return $stmt->execute();
     }
 
     /**
@@ -227,9 +260,29 @@ class SqliteHelper
         return $this->queryData($sql, $whereArgs);
     }
 
-    public function update($tableName)
+    /**
+     * 更新数据
+     * @param $tableName string 表名
+     * @param $values ContentValue 需要更新的值
+     * @param $whereClause string 更新条件
+     * @param $whereArgs ContentValue 更新参数
+     * @return bool
+     */
+    public function update($tableName, $values, $whereClause = null, $whereArgs = null)
     {
+        $sql = "UPDATE " . $tableName;
+        $sql .= " SET ";
 
+        $keys = $values->keys();
+        for ($i = 0; $i < count($keys); $i++) {
+            $sql .= ($i > 0) ? ',' : '';
+            $sql .= $keys[$i] . "=:" . $keys[$i];
+        }
+        if (!empty($whereClause)) {
+            $sql .= " WHERE " . $whereClause;
+        }
+        return $this->updateData($sql, $values, $whereArgs);
     }
+
 
 }

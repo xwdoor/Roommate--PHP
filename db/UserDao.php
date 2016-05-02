@@ -74,7 +74,9 @@ class UserDao
     }
 
     /**
-     * @param User $user
+     * 添加用户
+     * @param User $user 用户信息
+     * @return bool 添加结果
      */
     public function addUser($user)
     {
@@ -85,6 +87,6 @@ class UserDao
         $values->put(self::$Column_Mail,$user->mail);
         $values->put(self::$Column_Password,$user->password);
 
-        $this->mSqliteHelper->insert(TABLE_USER,$values);
+        return $this->mSqliteHelper->insert(TABLE_USER,$values);
     }
 }
