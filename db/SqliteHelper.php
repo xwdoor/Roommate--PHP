@@ -96,7 +96,7 @@ class SqliteHelper
             "create table " . TABLE_BILL_TYPE . " (" .
             "_id integer primary key autoincrement, " .
             "typeName varchar(20),";
-        if (!in_array(TABLE_BILL_TYPE, $this->tables) && $this->isTableExist(TABLE_BILL_TYPE)) {
+        if (!in_array(TABLE_BILL_TYPE, $this->tables) && !$this->isTableExist(TABLE_BILL_TYPE)) {
             $this->mPdo->exec($createBillType);
         }
     }
@@ -252,9 +252,8 @@ class SqliteHelper
         $sql = "INSERT INTO ";
         $sql .= $tableName;
         $sql .= '(';
-        $size = ($contentValues && count($contentValues->keys()) > 0) ?
-            0 : count($contentValues->keys());
-        if ($size > 0) {
+
+        if ($contentValues && count($contentValues->keys())) {
             $sql .= $this->appendColumn($contentValues->keys());
             $sql .= ')';
             $sql .= " VALUES (";

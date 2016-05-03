@@ -54,7 +54,7 @@ class BillDao
         $value->put(self::$COLUMN_IS_FINISH, $bill->isFinish);
         $value->put(self::$COLUMN_DATE, $bill->date);
         $value->put(self::$COLUMN_DESC, $bill->desc);
-//        var_dump($bill);
+        
         return $this->mSqliteHelper->insert(self::$Table_User, $value);
     }
 
