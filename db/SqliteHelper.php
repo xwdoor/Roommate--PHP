@@ -83,8 +83,8 @@ class SqliteHelper
         if (!in_array(TABLE_USER, $this->tables) && !$this->isTableExist(TABLE_USER)) {
             $this->mPdo->exec($createUser);
 //            var_dump("create table user");
-//            $sql = "INSERT INTO R_User (userName, realName, phone, password, mail) VALUES ('xwdoor', '肖威', '18684033888', 'xwdoor', 'xwdoor@126.com')";
-//            $this->mPdo->exec($sql);
+            $sql = "INSERT INTO R_User (userName, realName, phone, password, mail) VALUES ('xwdoor', '肖威', '18684033888', 'xwdoor', 'xwdoor@126.com')";
+            $this->mPdo->exec($sql);
         }
 
     }

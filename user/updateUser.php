@@ -6,12 +6,12 @@
  * Time: 22:42
  */
 
-require_once "db/SqliteHelper.php";
-require_once "db/ContentValue.php";
-require_once "db/UserDao.php";
-require_once "model/User.php";
-require_once "model/ResponseJson.php";
-require_once "utils/JsonUtils.php";
+require_once "../db/SqliteHelper.php";
+require_once "../db/ContentValue.php";
+require_once "../db/UserDao.php";
+require_once "../model/User.php";
+require_once "../model/ResponseJson.php";
+require_once "../utils/JsonUtils.php";
 
 $sqliteHelper = new SqliteHelper();
 $values = new ContentValue();
