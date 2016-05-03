@@ -10,6 +10,7 @@
 
 class User
 {
+
     /**
      * @var int
      * 用户Id
@@ -45,4 +46,19 @@ class User
      * 邮箱
      */
     public $mail;
+
+    /**
+     * User constructor.
+     * @param string $realName
+     * @param string $phone
+     * @param string $mail
+     * @param string $password
+     */
+    public function __construct($realName = null, $phone = null, $mail = null, $password = null)
+    {
+        $this->realName = $realName;
+        $this->phone = $phone;
+        $this->mail = $mail;
+        $this->password = $password;
+    }
 }

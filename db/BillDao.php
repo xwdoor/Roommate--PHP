@@ -54,10 +54,14 @@ class BillDao
         $value->put(self::$COLUMN_IS_FINISH, $bill->isFinish);
         $value->put(self::$COLUMN_DATE, $bill->date);
         $value->put(self::$COLUMN_DESC, $bill->desc);
-
+//        var_dump($bill);
         return $this->mSqliteHelper->insert(self::$Table_User, $value);
     }
 
+    /**
+     * 获取所有账单，按时间倒序排序
+     * @return array
+     */
     public function getBills()
     {
         $result = $this->mSqliteHelper->query(self::$Table_User,null,null,null,null,null,"date desc");
@@ -76,6 +80,8 @@ class BillDao
                 $bill->isFinish = $row[self::$COLUMN_IS_FINISH];
                 $bill->date = $row[self::$COLUMN_DATE];
                 $bill->desc = $row[self::$COLUMN_DESC];
+
+                $bills[$i] = $bill;
             }
             return $bills;
         }

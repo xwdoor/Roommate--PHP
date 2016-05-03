@@ -11,7 +11,7 @@
 class Bill
 {
     public $id;
-    
+
     /** @var float 金额 */
     public $money;
 
@@ -32,4 +32,27 @@ class Bill
 
     /** @var string 描述 */
     public $desc;
+
+    /**
+     * Bill constructor.
+     * @param float $money
+     * @param int $payerId
+     * @param int $recordId
+     * @param int $billType
+     * @param string $date
+     * @param string $desc
+     */
+    public function __construct($money = null, $payerId = null, $recordId = null,
+                                $billType = null, $date = null, $desc = null)
+    {
+        $this->money = $money;
+        $this->payerId = $payerId;
+        $this->recordId = $recordId;
+        $this->billType = $billType;
+        $this->date = $date;
+        $this->desc = $desc;
+        $this->isFinish = 0;
+    }
+
+
 }

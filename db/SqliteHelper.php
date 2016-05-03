@@ -9,6 +9,7 @@
 define('DATABASE_NAME', 'Roommate.sqlite');
 define("TABLE_BILL", "R_BillData");
 define("TABLE_USER", "R_User");
+define("TABLE_BILL_TYPE", "R_BillType");
 
 class SqliteHelper
 {
@@ -68,6 +69,9 @@ class SqliteHelper
         //如果不存在，则创建
         if (!in_array(TABLE_BILL, $this->tables) && !$this->isTableExist(TABLE_BILL)) {
             $this->mPdo->exec($createTableBill);
+
+            $sql = "INSERT INTO R_BillData(money,payerId,recordId,billType,isFinish,date,desc) VALUES (23.5,1,1,1,0,'2015-05-03','备注信息')";
+            $this->mPdo->exec($sql);
         }
 
         //创建用户表
@@ -87,6 +91,14 @@ class SqliteHelper
             $this->mPdo->exec($sql);
         }
 
+        //创建账单类型表
+        $createBillType =
+            "create table " . TABLE_BILL_TYPE . " (" .
+            "_id integer primary key autoincrement, " .
+            "typeName varchar(20),";
+        if (!in_array(TABLE_BILL_TYPE, $this->tables) && $this->isTableExist(TABLE_BILL_TYPE)) {
+            $this->mPdo->exec($createBillType);
+        }
     }
 
     /**
@@ -251,7 +263,7 @@ class SqliteHelper
         } else {
             return false;
         }
-
+//        var_dump($sql);
 //        $this->insertData($sql, $contentValues);
         return $this->insertData($sql, $contentValues);
     }
@@ -291,7 +303,7 @@ class SqliteHelper
     {
         if (!empty($clause)) {
             return $name . $clause;
-        }else{
+        } else {
             return '';
         }
     }
