@@ -79,10 +79,10 @@ class SqliteHelper
             "mail varchar(20))";
 
         if (!in_array(TABLE_USER, $this->tables) && !$this->isTableExist(TABLE_USER)) {
-            var_dump("create table user");
             $this->mPdo->exec($createUser);
-            $sql = "INSERT INTO R_User (userName, realName, phone, password, mail) VALUES ('xwdoor', '肖威', '18684033888', 'xwdoor', 'xwdoor@126.com')";
-            $this->mPdo->exec($sql);
+//            var_dump("create table user");
+//            $sql = "INSERT INTO R_User (userName, realName, phone, password, mail) VALUES ('xwdoor', '肖威', '18684033888', 'xwdoor', 'xwdoor@126.com')";
+//            $this->mPdo->exec($sql);
         }
 
     }
@@ -127,13 +127,14 @@ class SqliteHelper
      * 构建参数化SQL语句PDOStatement
      * @param string $sql sql语句
      * @param ContentValue $values sql语句中的参数
-     * @param ContentValue $whereArgs 筛选条件参数
      * @return PDOStatement
      */
-    private function getStatement($sql, $values, $whereArgs = null)
+    private function getStatement($sql, $values)
     {
         $stmt = $this->mPdo->prepare($sql);
-        $this->buildParams($stmt, $values);
+        if ($values) {
+            $this->buildParams($stmt, $values);
+        }
         $stmt->setFetchMode(PDO::FETCH_ASSOC);
         //不能close，不然$result不能读取
 //            $stmt->close();
@@ -144,19 +145,12 @@ class SqliteHelper
      * 构建参数化SQL
      * @param $stmt PDOStatement
      * @param $values ContentValue
-     * @param ContentValue $whereArgs
      */
-    private function buildParams($stmt, $values, $whereArgs = null)
+    private function buildParams($stmt, $values)
     {
         if ($stmt && $values) {
             foreach ($values->getArray() as $key => $value) {
                 $stmt->bindValue(":$key", $value);
-            }
-
-            if ($whereArgs) {
-                foreach ($values->getArray() as $key2 => $value2) {
-                    $stmt->bindValue(":$key2", $value2);
-                }
             }
         }
     }
@@ -167,7 +161,7 @@ class SqliteHelper
      * @param ContentValue $values sql语句中的参数
      * @return bool 返回sql执行结果
      */
-    private function insertData($sql, $values = null)
+    private function insertData($sql, $values)
     {
         if ($values) {
             $stmt = $this->getStatement($sql, $values);
@@ -184,7 +178,7 @@ class SqliteHelper
      * @param $values ContentValue sql语句中的参数
      * @return array 查询结果
      */
-    private function queryData($sql, $values = null)
+    private function queryData($sql, $values)
     {
         if ($values) {
             $stmt = $this->getStatement($sql, $values);
@@ -206,8 +200,31 @@ class SqliteHelper
      */
     private function updateData($sql, $values, $whereArgs)
     {
-        $stmt = $this->getStatement($sql, $values, $whereArgs);
-        return $stmt->execute();
+        if ($values) {
+            $stmt = $this->getStatement($sql, $values);
+            if ($whereArgs) {
+                $this->buildParams($stmt, $whereArgs);
+            }
+            return $stmt->execute();
+        } else {
+            return $this->mPdo->exec($sql) > 0;
+        }
+    }
+
+    /**
+     * 删除数据
+     * @param string $sql sql语句
+     * @param ContentValue $whereArgs 删除条件的参数
+     * @return bool 执行结果
+     */
+    private function deleteData($sql, $whereArgs)
+    {
+        if ($whereArgs) {
+            $stmt = $this->getStatement($sql, $whereArgs);
+            return $stmt->execute();
+        } else {
+            return $this->mPdo->exec($sql) > 0;
+        }
     }
 
     /**
@@ -243,9 +260,14 @@ class SqliteHelper
      * @param $columns array 查询的列名
      * @param $whereClause string 查询条件，格式：列名=:列名
      * @param $whereArgs ContentValue 查询条件参数，与参数$whereClause中的条目一一对应
+     * @param null|string $groupBy 分组
+     * @param null|string $having
+     * @param null|string $orderBy 排序
+     * @param null|string $limit
      * @return array 查询结果
      */
-    public function query($tableName, $columns, $whereClause, $whereArgs)
+    public function query($tableName, $columns, $whereClause, $whereArgs,
+                          $groupBy = null, $having = null, $orderBy = null, $limit = null)
     {
         $sql = "SELECT DISTINCT ";
         if ($columns || count($columns) == 0) {
@@ -254,10 +276,22 @@ class SqliteHelper
             $sql .= $this->appendColumn($columns);
         }
         $sql .= "FROM " . $tableName;
-        if (!empty($whereClause)) {
-            $sql .= " WHERE " . $whereClause;
-        }
+
+        $sql .= $this->appendClause(" WHERE ", $whereClause);
+        $sql .= $this->appendClause(" GROUP BY ", $groupBy);
+        $sql .= $this->appendClause(" HAVING ", $having);
+        $sql .= $this->appendClause(" ORDER BY ", $orderBy);
+        $sql .= $this->appendClause(" LIMIT ", $limit);
         return $this->queryData($sql, $whereArgs);
+    }
+
+    private function appendClause($name, $clause)
+    {
+        if (!empty($clause)) {
+            return $name . $clause;
+        }else{
+            return '';
+        }
     }
 
     /**
@@ -278,11 +312,21 @@ class SqliteHelper
             $sql .= ($i > 0) ? ',' : '';
             $sql .= $keys[$i] . "=:" . $keys[$i];
         }
-        if (!empty($whereClause)) {
-            $sql .= " WHERE " . $whereClause;
-        }
+        $sql .= $this->appendClause(" WHERE ", $whereClause);
         return $this->updateData($sql, $values, $whereArgs);
     }
 
+    /**
+     * 删除数据
+     * @param string $tableName 表名
+     * @param string $whereClause 删除条件
+     * @param null|ContentValue $whereArgs 删除条件的参数
+     */
+    public function delete($tableName, $whereClause, $whereArgs = null)
+    {
+        $sql = "DELETE FROM " . $tableName;
+        $sql .= $this->appendClause(" WHERE ", $whereClause);
+        $this->deleteData($sql, $whereArgs);
+    }
 
 }
