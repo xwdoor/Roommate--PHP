@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Created by PhpStorm.
+ * 服务器响应类
  * User: XWdoor
  * Date: 2016/4/27
  * Time: 19:26

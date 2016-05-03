@@ -1,12 +1,11 @@
 <?php
 
 /**
- * Created by PhpStorm.
+ * 用户信息类
  * User: XWdoor
  * Date: 2016/4/27
  * Time: 19:30
  */
-
 //namespace Roommate\model;
 
 class User
@@ -25,7 +24,7 @@ class User
 
     /**
      * @var string
-     * 真是姓名
+     * 真实姓名
      */
     public $realName;
 
