@@ -23,7 +23,7 @@ class UserDao
 
     private function __construct()
     {
-        require_once "SqliteHelper3.php";
+        require_once "SqliteHelper.php";
         require_once "ContentValue.php";
         $this->mSqliteHelper = new SqliteHelper();
     }
@@ -74,6 +74,34 @@ class UserDao
     }
 
     /**
+     * 获取用户列表
+     * @return array|null
+     */
+    public function getAllUser()
+    {
+        $result = $this->mSqliteHelper->query(self::$Table_User, null, null, null);
+        if ($result) {
+            $users = array();
+            for ($i = 0; $i < count($result); $i++) {
+                $row = $result[$i];
+
+                $user = new User();
+                $user->id = $row[self::$Column_Id];
+                $user->userName = $row[self::$Column_User_Name];
+                $user->realName = $row[self::$Column_Real_Name];
+                $user->phone = $row[self::$Column_Phone];
+                $user->mail = $row[self::$Column_Mail];
+
+                $users[$i] = $user;
+            }
+            return $users;
+
+        } else {
+            return null;
+        }
+    }
+
+    /**
      * 添加用户
      * @param User $user 用户信息
      * @return bool 添加结果
@@ -81,12 +109,17 @@ class UserDao
     public function addUser($user)
     {
         $values = new ContentValue();
-        $values->put(self::$Column_User_Name,$user->userName);
-        $values->put(self::$Column_Real_Name,$user->realName);
-        $values->put(self::$Column_Phone,$user->phone);
-        $values->put(self::$Column_Mail,$user->mail);
-        $values->put(self::$Column_Password,$user->password);
+        $values->put(self::$Column_User_Name, $user->userName);
+        $values->put(self::$Column_Real_Name, $user->realName);
+        $values->put(self::$Column_Phone, $user->phone);
+        $values->put(self::$Column_Mail, $user->mail);
+        $values->put(self::$Column_Password, $user->password);
 
-        return $this->mSqliteHelper->insert(TABLE_USER,$values);
+        return $this->mSqliteHelper->insert(self::$Table_User, $values);
+    }
+
+    public function updateUser($user)
+    {
+
     }
 }
