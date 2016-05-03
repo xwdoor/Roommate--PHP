@@ -15,10 +15,12 @@ class ResponseJson
     /** @var string $result 结果,Json格式 */
     public $result;
 
-    
+
     public function __construct()
     {
         $this->code = 0;
+        $this->error = '';
+        $this->result = '';
     }
 
 

@@ -14,8 +14,8 @@ class JsonUtils
      * @return string json字符串
      */
     public static function toJson($value){
-        $str = json_encode($value);
-        return self::decodeUnicode($str);
+        return $str = json_encode($value);
+//        return self::decodeUnicode($str);
     }
 
     /**

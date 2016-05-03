@@ -60,7 +60,9 @@ class SqliteHelper
             "_id integer primary key autoincrement, " .
             "money decimal(10,2), " .
             "payerId integer," .
+            "recordId integer," .
             "billType integer," .
+            "isFinish integer," .
             "date varchar(20)," .
             "desc text)";
         //如果不存在，则创建
