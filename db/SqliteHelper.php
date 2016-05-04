@@ -95,9 +95,22 @@ class SqliteHelper
         $createBillType =
             "create table " . TABLE_BILL_TYPE . " (" .
             "_id integer primary key autoincrement, " .
-            "typeName varchar(20),";
+            "typeName varchar(20))";
         if (!in_array(TABLE_BILL_TYPE, $this->tables) && !$this->isTableExist(TABLE_BILL_TYPE)) {
             $this->mPdo->exec($createBillType);
+
+            $sql = "INSERT INTO R_BILLTYPE(typeName) VALUES('市场')";
+            $this->mPdo->exec($sql);
+            $sql = "INSERT INTO R_BILLTYPE(typeName) VALUES('超市')";
+            $this->mPdo->exec($sql);
+            $sql = "INSERT INTO R_BILLTYPE(typeName) VALUES('水费')";
+            $this->mPdo->exec($sql);
+            $sql = "INSERT INTO R_BILLTYPE(typeName) VALUES('电费')";
+            $this->mPdo->exec($sql);
+            $sql = "INSERT INTO R_BILLTYPE(typeName) VALUES('气费')";
+            $this->mPdo->exec($sql);
+            $sql = "INSERT INTO R_BILLTYPE(typeName) VALUES('其他')";
+            $this->mPdo->exec($sql);
         }
     }
 

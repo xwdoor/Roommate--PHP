@@ -8,7 +8,8 @@
  */
 class BillDao
 {
-    public static $Table_User = TABLE_BILL;
+    public static $TABLE_BILL = TABLE_BILL;
+    public static $TABLE_BILL_TYPE = TABLE_BILL_TYPE;
     public static $COLUMN_ID = "_id";
     public static $COLUMN_MONEY = "money";
     public static $COLUMN_PAYER_ID = "payerId";
@@ -17,6 +18,8 @@ class BillDao
     public static $COLUMN_IS_FINISH = "isFinish";
     public static $COLUMN_DATE = "date";
     public static $COLUMN_DESC = "desc";
+
+    public static $COLUMN_TYPE_NAME = "typeName";
 
     /** @var  BillDao */
     private static $sInstance;
@@ -54,8 +57,8 @@ class BillDao
         $value->put(self::$COLUMN_IS_FINISH, $bill->isFinish);
         $value->put(self::$COLUMN_DATE, $bill->date);
         $value->put(self::$COLUMN_DESC, $bill->desc);
-        
-        return $this->mSqliteHelper->insert(self::$Table_User, $value);
+
+        return $this->mSqliteHelper->insert(self::$TABLE_BILL, $value);
     }
 
     /**
@@ -64,8 +67,8 @@ class BillDao
      */
     public function getBills()
     {
-        $result = $this->mSqliteHelper->query(self::$Table_User,null,null,null,null,null,"date desc");
-        if($result){
+        $result = $this->mSqliteHelper->query(self::$TABLE_BILL, null, null, null, null, null, "date desc");
+        if ($result) {
             $bills = array();
 
             for ($i = 0; $i < count($result); $i++) {
@@ -84,6 +87,27 @@ class BillDao
                 $bills[$i] = $bill;
             }
             return $bills;
+        }
+    }
+
+    /**
+     * 获取账单类型
+     * @return array
+     */
+    public function getBillType()
+    {
+        $result = $this->mSqliteHelper->query(self::$TABLE_BILL_TYPE, null, null, null);
+        if ($result) {
+            $billTypes = array();
+
+            for ($i = 0; $i < count($result); $i++) {
+                $row = $result[$i];
+
+                $billType = new BillType($row[self::$COLUMN_ID],$row[self::$COLUMN_TYPE_NAME]);
+
+                $billTypes[$i] = $billType;
+            }
+            return $billTypes;
         }
     }
 }
