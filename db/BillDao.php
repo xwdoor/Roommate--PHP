@@ -159,4 +159,15 @@ class BillDao
 
         return $this->mSqliteHelper->update(self::$TABLE_BILL, $value, self::$COLUMN_ID . "=:" . self::$COLUMN_ID, $whereArgs);
     }
+
+    /**
+     * @param int $id
+     * @return bool
+     */
+    public function deleteBill($id)
+    {
+        $whereArgs = new ContentValue();
+        $whereArgs->put(self::$COLUMN_ID, $id);
+        return $this->mSqliteHelper->delete(self::$TABLE_BILL, self::$COLUMN_ID . "=:" . self::$COLUMN_ID, $whereArgs);
+    }
 }

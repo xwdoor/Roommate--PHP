@@ -346,12 +346,13 @@ class SqliteHelper
      * @param string $tableName 表名
      * @param string $whereClause 删除条件
      * @param null|ContentValue $whereArgs 删除条件的参数
+     * @return bool
      */
     public function delete($tableName, $whereClause, $whereArgs = null)
     {
         $sql = "DELETE FROM " . $tableName;
         $sql .= $this->appendClause(" WHERE ", $whereClause);
-        $this->deleteData($sql, $whereArgs);
+        return $this->deleteData($sql, $whereArgs);
     }
 
     /**
