@@ -6,6 +6,13 @@
  * Time: 14:09
  */
 
+require_once "../db/SqliteHelper.php";
+require_once "../db/ContentValue.php";
+require_once "../db/BillDao.php";
+require_once "../model/Bill.php";
+require_once "../model/ResponseJson.php";
+require_once "../utils/JsonUtils.php";
+
 $id = $_POST[BillDao::$COLUMN_ID];
 $money = $_POST[BillDao::$COLUMN_MONEY];
 $payerId = $_POST[BillDao::$COLUMN_PAYER_ID];
@@ -17,6 +24,7 @@ $desc = $_POST[BillDao::$COLUMN_DESC];
 $response = new ResponseJson();
 if ($id) {
     $bill = new Bill($money, $payerId, $recordId, $billType, $date, $desc);
+    $bill->id = $id;
     $result = BillDao::getInstance()->updateBill($bill);
     if ($result) {
         $response->result = "更新账单成功";

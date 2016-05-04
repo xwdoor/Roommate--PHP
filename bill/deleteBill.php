@@ -6,6 +6,13 @@
  * Time: 14:22
  */
 
+require_once "../db/SqliteHelper.php";
+require_once "../db/ContentValue.php";
+require_once "../db/BillDao.php";
+require_once "../model/Bill.php";
+require_once "../model/ResponseJson.php";
+require_once "../utils/JsonUtils.php";
+
 $id = $_POST[BillDao::$COLUMN_ID];
 
 $response = new ResponseJson();
