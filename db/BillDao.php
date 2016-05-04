@@ -138,4 +138,25 @@ class BillDao
         }
         return null;
     }
+
+    /**
+     * 更新账单
+     * @param Bill $bill
+     * @return bool
+     */
+    public function updateBill($bill)
+    {
+        $value = new ContentValue();
+        $value->put(self::$COLUMN_MONEY, $bill->money);
+        $value->put(self::$COLUMN_PAYER_ID, $bill->payerId);
+        $value->put(self::$COLUMN_RECORD_ID, $bill->recordId);
+        $value->put(self::$COLUMN_BILL_TYPE, $bill->billType);
+        $value->put(self::$COLUMN_DATE, $bill->date);
+        $value->put(self::$COLUMN_DESC, $bill->desc);
+
+        $whereArgs = new ContentValue();
+        $whereArgs->put(self::$COLUMN_ID, $bill->id);
+
+        return $this->mSqliteHelper->update(self::$TABLE_BILL, $value, self::$COLUMN_ID . "=:" . self::$COLUMN_ID, $whereArgs);
+    }
 }
