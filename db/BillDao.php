@@ -61,21 +61,8 @@ class BillDao
         return $this->mSqliteHelper->insert(self::$TABLE_BILL, $value);
     }
 
-    /**
-     * 获取所有账单，按时间倒序排序
-     * @param null|int $userId
-     * @return array
-     */
-    public function getBills($userId = null)
+    private function parseBills($result)
     {
-        if ($userId) {
-            $whereClause = self::$COLUMN_PAYER_ID . "=:" . self::$COLUMN_PAYER_ID;
-            $whereArgs = new ContentValue();
-            $whereArgs->put(self::$COLUMN_PAYER_ID, $userId);
-            $result = $this->mSqliteHelper->query(self::$TABLE_BILL, null, $whereClause, $whereArgs, null, null, "date desc");
-        } else {
-            $result = $this->mSqliteHelper->query(self::$TABLE_BILL, null, null, null, null, null, "date desc");
-        }
         if ($result) {
             $bills = array();
 
@@ -97,6 +84,37 @@ class BillDao
             return $bills;
         }
         return null;
+    }
+
+    /**
+     * 获取所有账单，按时间倒序排序
+     * @param null|int $userId
+     * @return array
+     */
+    public function getBills($userId = null)
+    {
+        if ($userId) {
+            $whereClause = self::$COLUMN_PAYER_ID . "=:" . self::$COLUMN_PAYER_ID;
+            $whereArgs = new ContentValue();
+            $whereArgs->put(self::$COLUMN_PAYER_ID, $userId);
+            $result = $this->mSqliteHelper->query(self::$TABLE_BILL, null, $whereClause, $whereArgs, null, null, "date desc");
+        } else {
+            $result = $this->mSqliteHelper->query(self::$TABLE_BILL, null, null, null, null, null, "date desc");
+        }
+        return $this->parseBills($result);
+    }
+
+    /**
+     * 获取未结算账单账单，按payerId进行分组求和
+     * @return array
+     */
+    public function getUnfinishedBills()
+    {
+        $columns = array(self::$COLUMN_PAYER_ID, "SUM(" . self::$COLUMN_MONEY . ") AS " . self::$COLUMN_MONEY);
+        $whereClause = self::$COLUMN_IS_FINISH . "<=0";
+        $result = $this->mSqliteHelper->query(self::$TABLE_BILL, $columns, $whereClause, null, self::$COLUMN_PAYER_ID, null, "date desc");
+
+        return $this->parseBills($result);
     }
 
     /**

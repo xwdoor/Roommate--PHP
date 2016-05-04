@@ -2,10 +2,9 @@
 /**
  * Created by PhpStorm.
  * User: XiaoWei
- * Date: 2016/5/3 003
- * Time: 16:19
+ * Date: 2016/5/4 004
+ * Time: 11:17
  */
-
 require_once "../db/SqliteHelper.php";
 require_once "../db/ContentValue.php";
 require_once "../db/BillDao.php";
@@ -13,10 +12,8 @@ require_once "../model/Bill.php";
 require_once "../model/ResponseJson.php";
 require_once "../utils/JsonUtils.php";
 
-$payerId = $_GET[BillDao::$COLUMN_PAYER_ID];
-
 $response = new ResponseJson();
-$bills = BillDao::getInstance()->getBills($payerId);
+$bills = BillDao::getInstance()->getUnfinishedBills();
 if ($bills) {
     $json = JsonUtils::toJson($bills);
     $response->result = $json;
@@ -27,4 +24,3 @@ if ($bills) {
 //echo '获取用户列表';
 $code = JsonUtils::toJson($response);
 echo $code;
-//echo JsonUtils::toJson($bills);

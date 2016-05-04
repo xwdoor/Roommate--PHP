@@ -210,7 +210,6 @@ class SqliteHelper
         if ($values) {
             $stmt = $this->getStatement($sql, $values);
             $stmt->execute();
-
         } else {
             $stmt = $this->mPdo->query($sql);
         }
@@ -355,4 +354,12 @@ class SqliteHelper
         $this->deleteData($sql, $whereArgs);
     }
 
+    /**
+     * 执行sql语句
+     * @param string $sql
+     * @param ContentValue $selectionArgs
+     */
+    public function rawQuery($sql, $selectionArgs){
+
+    }
 }

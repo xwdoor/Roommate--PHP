@@ -26,10 +26,10 @@ if ($money && $payerId >= 0 && $recordId >= 0 && $billType >= 0 && $date) {
     $bill = new Bill($money, $payerId, $recordId, $billType, $date, $desc);
     $result = BillDao::getInstance()->addBill($bill);
     if ($result) {
-        $response->result = "添加成功";
+        $response->result = "添加账单成功";
     } else {
         $response->code = 2;
-        $response->error = "添加失败";
+        $response->error = "添加账单失败";
     }
 } else {
     $response->code = 1;
