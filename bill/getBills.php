@@ -13,8 +13,10 @@ require_once "../model/Bill.php";
 require_once "../model/ResponseJson.php";
 require_once "../utils/JsonUtils.php";
 
+$payerId = $_GET[BillDao::$COLUMN_PAYER_ID];
+
 $response = new ResponseJson();
-$bills = BillDao::getInstance()->getBills();
+$bills = BillDao::getInstance()->getBills($payerId);
 if ($bills) {
     $json = JsonUtils::toJson($bills);
     $response->result = $json;

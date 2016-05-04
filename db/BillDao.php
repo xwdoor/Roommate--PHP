@@ -63,11 +63,19 @@ class BillDao
 
     /**
      * 获取所有账单，按时间倒序排序
+     * @param null|int $userId
      * @return array
      */
-    public function getBills()
+    public function getBills($userId = null)
     {
-        $result = $this->mSqliteHelper->query(self::$TABLE_BILL, null, null, null, null, null, "date desc");
+        if ($userId) {
+            $whereClause = self::$COLUMN_PAYER_ID . "=:" . self::$COLUMN_PAYER_ID;
+            $whereArgs = new ContentValue();
+            $whereArgs->put(self::$COLUMN_PAYER_ID, $userId);
+            $result = $this->mSqliteHelper->query(self::$TABLE_BILL, null, $whereClause, $whereArgs, null, null, "date desc");
+        } else {
+            $result = $this->mSqliteHelper->query(self::$TABLE_BILL, null, null, null, null, null, "date desc");
+        }
         if ($result) {
             $bills = array();
 
@@ -88,6 +96,7 @@ class BillDao
             }
             return $bills;
         }
+        return null;
     }
 
     /**
@@ -103,11 +112,12 @@ class BillDao
             for ($i = 0; $i < count($result); $i++) {
                 $row = $result[$i];
 
-                $billType = new BillType($row[self::$COLUMN_ID],$row[self::$COLUMN_TYPE_NAME]);
+                $billType = new BillType($row[self::$COLUMN_ID], $row[self::$COLUMN_TYPE_NAME]);
 
                 $billTypes[$i] = $billType;
             }
             return $billTypes;
         }
+        return null;
     }
 }
