@@ -6,7 +6,7 @@
  * Date: 2016/4/27
  * Time: 19:44
  */
-define('DATABASE_NAME', 'Roommate.sqlite');
+define('DATABASE_NAME', dirname(__FILE__).'/Roommate.sqlite');
 define("TABLE_BILL", "R_BillData");
 define("TABLE_USER", "R_User");
 define("TABLE_BILL_TYPE", "R_BillType");
