@@ -70,8 +70,8 @@ class SqliteHelper
         if (!in_array(TABLE_BILL, $this->tables) && !$this->isTableExist(TABLE_BILL)) {
             $this->mPdo->exec($createTableBill);
 
-            $sql = "INSERT INTO R_BillData(money,payerId,recordId,billType,isFinish,date,desc) VALUES (23.5,1,1,1,0,'2015-05-03','备注信息')";
-            $this->mPdo->exec($sql);
+//            $sql = "INSERT INTO R_BillData(money,payerId,recordId,billType,isFinish,date,desc) VALUES (23.5,1,1,1,0,'2015-05-03','备注信息')";
+//            $this->mPdo->exec($sql);
         }
 
         //创建用户表
