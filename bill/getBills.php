@@ -21,8 +21,12 @@ if ($bills) {
     $json = JsonUtils::toJson($bills);
     $response->result = $json;
 } else {
-    $response->code = 1;
-    $response->error = "获取账单信息错误";
+//    $response->code = 1;
+//    $response->error = "获取账单信息错误";
+    //可以是空账单
+    $response->code = 0;
+    $response->error = "没有该账单信息";
+    $response->result = null;
 }
 //echo '获取用户列表';
 $code = JsonUtils::toJson($response);

@@ -75,7 +75,7 @@ class BillDao
                 $bill->payerId = $row[self::$COLUMN_PAYER_ID];
                 $bill->recordId = $row[self::$COLUMN_RECORD_ID];
                 $bill->billType = $row[self::$COLUMN_BILL_TYPE];
-                $bill->isFinish = $row[self::$COLUMN_IS_FINISH];
+                $bill->isFinish = $row[self::$COLUMN_IS_FINISH] > 0;
                 $bill->date = $row[self::$COLUMN_DATE];
                 $bill->desc = $row[self::$COLUMN_DESC];
 
@@ -169,5 +169,17 @@ class BillDao
         $whereArgs = new ContentValue();
         $whereArgs->put(self::$COLUMN_ID, $id);
         return $this->mSqliteHelper->delete(self::$TABLE_BILL, self::$COLUMN_ID . "=:" . self::$COLUMN_ID, $whereArgs);
+    }
+
+    /**
+     * 结算所有账单
+     * @return bool
+     */
+    public function finishBill()
+    {
+        $value = new ContentValue();
+        $value->put(self::$COLUMN_IS_FINISH, 1);
+
+        return $this->mSqliteHelper->update(self::$TABLE_BILL, $value);
     }
 }
