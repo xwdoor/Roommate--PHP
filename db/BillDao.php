@@ -110,11 +110,35 @@ class BillDao
      */
     public function getUnfinishedBills()
     {
+        //在sql语句中求和
         $columns = array(self::$COLUMN_PAYER_ID, "SUM(" . self::$COLUMN_MONEY . ") AS " . self::$COLUMN_MONEY);
         $whereClause = self::$COLUMN_IS_FINISH . "<=0";
-        $result = $this->mSqliteHelper->query(self::$TABLE_BILL, $columns, $whereClause, null, self::$COLUMN_PAYER_ID, null, "date desc");
+        $result = $this->mSqliteHelper->query(self::$TABLE_BILL, $columns, $whereClause, null, self::$COLUMN_PAYER_ID);
 
         return $this->parseBills($result);
+
+//        //通过遍历结果求和
+//        $whereClause = self::$COLUMN_IS_FINISH . "<=0";
+//        $result = $this->mSqliteHelper->query(self::$TABLE_BILL, null, $whereClause, null);
+//
+//        $bills = array();
+//        foreach ($this->parseBills($result) as $item) {
+//            if (!array_key_exists($item->payerId, $bills)) {
+//                $bills[$item->payerId] = 0.0;
+//            }
+//            $bills[$item->payerId] += $item->money;
+//        }
+//
+//        $arr = array();
+//        $i = 0;
+//        foreach ($bills as $key => $value) {
+//            $bill = new Bill();
+//            $bill->payerId = $key;
+//            $bill->money = $value;
+//            $arr[$i] = $bill;
+//            $i = $i + 1;
+//        }
+//        return $arr;
     }
 
     /**

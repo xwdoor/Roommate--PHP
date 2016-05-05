@@ -294,9 +294,9 @@ class SqliteHelper
     public function query($tableName, $columns, $whereClause, $whereArgs,
                           $groupBy = null, $having = null, $orderBy = null, $limit = null)
     {
-        $sql = "SELECT DISTINCT ";
-        if ($columns || count($columns) == 0) {
-            $sql .= '* ';
+        $sql = "SELECT ";
+        if ($columns == null || count($columns) == 0) {
+            $sql .= 'DISTINCT * ';
         } else {
             $sql .= $this->appendColumn($columns);
         }
@@ -360,7 +360,8 @@ class SqliteHelper
      * @param string $sql
      * @param ContentValue $selectionArgs
      */
-    public function rawQuery($sql, $selectionArgs){
+    public function rawQuery($sql, $selectionArgs)
+    {
 
     }
 }
