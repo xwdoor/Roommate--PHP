@@ -8,10 +8,14 @@
 
 //http://xwdoor.net/roommate/download.php
 
-$file = 'roommate-release.apk';
-$name = time() . '.zip';
+$file = 'app-release.apk';
+if ($_GET['version']) {
+    $name = 'roommate-release-v' . $_GET['version'] . '.apk';
+} else {
+    $name = 'roommate-release.apk';
+}
 $obj = new FileDownload();
-$flag = $obj->download($file);
+$flag = $obj->download($file, $name);
 //$flag = $obj->download($file, $name, true); // 断点续传
 if (!$flag) {
     echo 'file not exists';
