@@ -11,9 +11,9 @@ require_once "model/ResponseJson.php";
 require_once "utils/JsonUtils.php";
 
 $appInfo = new AppInfo();
-$appInfo->versionCode = 3;
-$appInfo->versionName = "1.1.1";
-$appInfo->description = "1.增加新版本检测.\n2.账单金额不超过6位数.\n3.修复已知Bug.";
+$appInfo->versionCode = 4;
+$appInfo->versionName = "1.1.2";
+$appInfo->description = "1.付款人默认为当前登录用户；\n2.结算账单时给予提示；\n3.优化账单列表的日期显示bug";
 $appInfo->downloadUrl = "http://xwdoor.net/roommate/download.php?version=" . $appInfo->versionName;
 
 $response = new ResponseJson();
