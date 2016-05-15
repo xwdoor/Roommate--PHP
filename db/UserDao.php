@@ -118,8 +118,24 @@ class UserDao
         return $this->mSqliteHelper->insert(self::$TABLE_USER, $values);
     }
 
+    /**
+     * @param $user User
+     * @return bool
+     */
     public function updateUser($user)
     {
+        $value = new ContentValue();
+        $value->put(self::$COLUMN_MAIL, $user->mail);
+        $value->put(self::$COLUMN_PHONE, $user->phone);
+        $value->put(self::$COLUMN_REAL_NAME, $user->realName);
 
+
+        $whereArgs = new ContentValue();
+        $whereArgs->put(self::$COLUMN_ID, $user->id);
+        $whereArgs->put(self::$COLUMN_PASSWORD, $user->password);
+        return $this->mSqliteHelper->update(self::$TABLE_USER, $value,
+            self::$COLUMN_ID . "=:" . self::$COLUMN_ID . "AND " .
+            self::$COLUMN_PASSWORD . "=:" . self::$COLUMN_PASSWORD,
+            $whereArgs);
     }
 }

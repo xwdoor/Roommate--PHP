@@ -13,7 +13,7 @@ require_once "utils/JsonUtils.php";
 $appInfo = new AppInfo();
 $appInfo->versionCode = 5;
 $appInfo->versionName = "1.1.3";
-$appInfo->description = "1.个人中心显示个人账单；\n2.优化账单显示；\n3.解决闪退问题";
+$appInfo->description = "1.个人中心显示个人账单\n2.优化账单显示\n3.解决闪退问题";
 $appInfo->downloadUrl = "http://xwdoor.net/roommate/download.php?version=" . $appInfo->versionName;
 
 $response = new ResponseJson();
