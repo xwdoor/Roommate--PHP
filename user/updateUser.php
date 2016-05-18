@@ -13,27 +13,17 @@ require_once "../model/User.php";
 require_once "../model/ResponseJson.php";
 require_once "../utils/JsonUtils.php";
 
-$sqliteHelper = new SqliteHelper();
-$values = new ContentValue();
-$values->put(UserDao::$COLUMN_MAIL, "769765605@qq.com");
-$r = $sqliteHelper->update(TABLE_USER, $values);
-if ($r) {
-    echo '更新成功';
-} else {
-    echo '更新失败';
-}
+
+$id = $_POST[UserDao::$COLUMN_ID];
+$realName = $_POST[UserDao::$COLUMN_REAL_NAME];
+$mail = $_POST[UserDao::$COLUMN_MAIL];
+$phone = $_POST[UserDao::$COLUMN_PHONE];
+$password = $_POST[UserDao::$COLUMN_PASSWORD];
 
 $response = new ResponseJson();
-
-$id = $_GET[UserDao::$COLUMN_ID];
-$realName = $_GET[UserDao::$COLUMN_REAL_NAME];
-$mail = $_GET[UserDao::$COLUMN_MAIL];
-$phone = $_GET[UserDao::$COLUMN_PHONE];
-$password = $_GET[UserDao::$COLUMN_PASSWORD];
-
 if ($id && $password) {//id和密码不能为空
     if ($realName || $mail || $phone) {//有一个不为空即可
-        $user = new User($realName, $mail, $phone, $password);
+        $user = new User($realName, $phone, $mail, $password);
         $user->id = $id;
         $result = UserDao::getInstance()->updateUser($user);
         if ($result) {

@@ -45,11 +45,11 @@ class UserDao
      */
     public function getUser($account, $password)
     {
-        $value = new ContentValue();
-        $value->put(self::$COLUMN_REAL_NAME, $account);
-        $value->put(self::$COLUMN_PHONE, $account);
-        $value->put(self::$COLUMN_MAIL, $account);
-        $value->put(self::$COLUMN_PASSWORD, $password);
+        $whereArgs = new ContentValue();
+        $whereArgs->put(self::$COLUMN_REAL_NAME, $account);
+        $whereArgs->put(self::$COLUMN_PHONE, $account);
+        $whereArgs->put(self::$COLUMN_MAIL, $account);
+        $whereArgs->put(self::$COLUMN_PASSWORD, $password);
 
         $whereClause = sprintf("%s=:%s OR %s=:%s OR %s=:%s AND %s=:%s",
             self::$COLUMN_REAL_NAME, self::$COLUMN_REAL_NAME,
@@ -57,7 +57,7 @@ class UserDao
             self::$COLUMN_MAIL, self::$COLUMN_MAIL,
             self::$COLUMN_PASSWORD, self::$COLUMN_PASSWORD);
 
-        $result = $this->mSqliteHelper->query(self::$TABLE_USER, null, $whereClause, $value);
+        $result = $this->mSqliteHelper->query(self::$TABLE_USER, null, $whereClause, $whereArgs);
         if ($result) {
             $row = $result[0];
 
@@ -124,18 +124,31 @@ class UserDao
      */
     public function updateUser($user)
     {
-        $value = new ContentValue();
-        $value->put(self::$COLUMN_MAIL, $user->mail);
-        $value->put(self::$COLUMN_PHONE, $user->phone);
-        $value->put(self::$COLUMN_REAL_NAME, $user->realName);
-
-
         $whereArgs = new ContentValue();
         $whereArgs->put(self::$COLUMN_ID, $user->id);
         $whereArgs->put(self::$COLUMN_PASSWORD, $user->password);
-        return $this->mSqliteHelper->update(self::$TABLE_USER, $value,
-            self::$COLUMN_ID . "=:" . self::$COLUMN_ID . "AND " .
-            self::$COLUMN_PASSWORD . "=:" . self::$COLUMN_PASSWORD,
-            $whereArgs);
+
+        $whereClause = sprintf("%s=:%s AND %s=:%s",
+            self::$COLUMN_ID, self::$COLUMN_ID,
+            self::$COLUMN_PASSWORD, self::$COLUMN_PASSWORD);
+
+        $result = $this->mSqliteHelper->query(self::$TABLE_USER,null,$whereClause,$whereArgs);
+        if($result){//如果该用户密码正确
+            $value = new ContentValue();
+            $value->put(self::$COLUMN_MAIL, $user->mail);
+            $value->put(self::$COLUMN_PHONE, $user->phone);
+            $value->put(self::$COLUMN_REAL_NAME, $user->realName);
+
+            $whereArgs = new ContentValue();
+            $whereArgs->put(self::$COLUMN_ID, $user->id);
+            $whereArgs->put(self::$COLUMN_PASSWORD, $user->password);
+            return $this->mSqliteHelper->update(self::$TABLE_USER, $value,
+                self::$COLUMN_ID . "=:" . self::$COLUMN_ID . " AND " .
+                self::$COLUMN_PASSWORD . "=:" . self::$COLUMN_PASSWORD,
+                $whereArgs);
+        }else{
+            return false;
+        }
+
     }
 }
